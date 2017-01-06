@@ -26,7 +26,7 @@ class Calendar {
     float tMargin = height / 40;
     float txtSize = 32;
     float lineH = ceilMargin+tMargin + buffer + s/2;
-    float lineY =  ceilMargin + tMargin + (s + buffer) * 6;
+    float lineY =  ceilMargin + tMargin + (s + buffer) * 7;
     
     // background color
     noStroke();
@@ -57,7 +57,11 @@ class Calendar {
     line(arrX1, arrY, arrX1+txtSize/2, arrY+txtSize/2);
     line(arrX1+txtSize/2, arrY+txtSize/2, arrX1, arrY+txtSize);
     line(arrX2, arrY, arrX2-txtSize/2, arrY+txtSize/2);
-    line(arrX2-txtSize/2, arrY+txtSize/2, arrX2, arrY+txtSize); 
+    line(arrX2-txtSize/2, arrY+txtSize/2, arrX2, arrY+txtSize);
+    
+    if (mouseClick(arrX1, arrY, arrX1+txtSize/2, arrY+txtSize)) addMonth();
+    if (mouseClick(arrX2-txtSize/2, arrY, arrX2, arrY+txtSize)) subMonth();
+    if (mouseClick(arrX1-s/2, arrY+txtSize/2, s/4)) setToday();
     
     strokeWeight(2);
     stroke(131);
@@ -118,6 +122,8 @@ class Calendar {
     fill(169);
     line(0, lineY, width, lineY);
     
+    if(clicked > 0) clicked--;
+    
     /*
     if(width-mouseX > 0 && width-mouseX < 32) {
       color c1 = color(255);
@@ -158,11 +164,51 @@ class Calendar {
     0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31
   };
 
-  int getDay(int month, int day, int year) {
-    int y = year - (14 - month) / 12;
+  int clicked = 0;
+
+  void mouseClick() {
+    clicked = 1;
+  }
+
+  boolean mouseClick(float x1, float y1, float x2, float y2) {
+    if (clicked > 0 && x1 <= mouseX && y1 <= mouseY && x2 >= mouseX && y2 >= mouseY) {
+      return true;
+    } else return false;
+  }
+
+  boolean mouseClick(float x, float y, float r) {
+    if (clicked > 0 && dist(x, y, mouseX, mouseY) <= r) return true;
+    else return false;
+  }
+
+  void addMonth() {
+    if(month+1 >= 13) {
+      month = 1;
+      year++;
+    } else month++;
+    d = getDay(month, 1, year);
+  }
+  
+  void subMonth() {
+    if(month-1 <= 0) {
+      month = 12;
+      year--;
+    } else month--;
+    d = getDay(month, 1, year);
+  }
+  
+  void setToday() {
+    today = day();
+    month = month();
+    year = year();
+    d = getDay(month, 1, year);
+  }
+
+  int getDay(int mn, int dy, int yr) {
+    int y = yr - (14 - mn) / 12;
     int x = y + y/4 - y/100 + y/400;
-    int m = month + 12 * ((14 - month) / 12) - 2;
-    int res = (day + x + (31*m)/12) % 7;
+    int m = mn + 12 * ((14 - mn) / 12) - 2;
+    int res = (dy + x + (31*m)/12) % 7;
     return res;
   }
 
