@@ -1,28 +1,31 @@
 todo todoView = null;
+Calendar cView = new Calendar();
+int prevHeight = height;
+boolean calView = true;
 
 void settings() {
-    size(600, 600);
+  size(600, 800);
 }
 
 void setup() {
-      surface.setResizable(true);
-
+  surface.setResizable(true);
 }
-int prevHeight = height;
+
 void draw() {
   background(255);
-  println(prevHeight==height);
-  if(todoView != null) {
-    //prevHeight = height;
-    todoView.show();      //todoView.update();
-      
-      println("ooo",height);
-      
-  }
-  if(todoView == null || prevHeight != height) {
-    prevHeight = height;
-    todoView = new todo();
-    print("TESTING");
-  }
   
+  if(calView) {
+    cView.update();
+    cView.show();
+  } else {
+    if(todoView != null) {
+      todoView.show();
+    }
+    if(todoView == null || prevHeight != height) {
+      prevHeight = height;
+      todoView = new todo();
+      //print("TESTING");
+    }
+  }
+   
 }
